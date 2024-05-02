@@ -1,0 +1,1 @@
+00 07 * * * sh /home/reports-compartfon/update_portin/etl-update-tblportin/shell_script/load_portin.sh > /home/reports-compartfon/update_portin/out.out

@@ -1,0 +1,33 @@
+2024-02-16 17:30:01,305; - INFO; - Init ETL-Preleads process
+2024-02-16 17:30:01,305; - INFO; - Inicio 1708126201.305974
+2024-02-16 17:30:01,306; - INFO; - 1. Extract data
+2024-02-16 17:30:01,485; - INFO; - fin 1708126201.48526
+2024-02-16 17:30:01,485; - INFO; - Tiempo de ejecucion: 0.17928600311279297
+2024-02-16 17:30:01,485; - INFO; - Pruebas de conexión y extracción tickets: 3705
+2024-02-16 17:30:01,485; - INFO; - 2. Transform data
+2024-02-16 17:30:01,491; - INFO; -   usuarioreporta    numreportesoc numreportebestel responsable  \
+0      mariveraf  INC000000206398  INC000000206398         NaN   
+
+          ingasignado                                            detalle  \
+0  Eliza Osorio Ortiz  Razn social:  SAT   Cliente final:    SAT CID:...   
+
+                            actividad           fc_fechacreacion  status  \
+0  Datos Mock, Datos Mock, Datos Mock 2024-02-16 17:30:01.485838       5   
+
+   prioridad  severidad descripcion  boafectacion  boatribuible  \
+0          2       3000        Otro             1             0   
+
+   ticketstatus_id  tipofalla_id  tiporequerimiento_id  tickettipo_id  \
+0                1             5                     1              1   
+
+   criticidadticket_id  sitio_id      fc_inicioticket         fc_finticket  \
+0                    3       213  2021-01-03 11:33:46  2021-01-07 04:16:19   
+
+    duracion  tiempo_afectacion_minutos  tiempo_afectacion_atribuible  \
+0  88.709167                         12                             0   
+
+   bst2_tiempo_afectacion_concil  
+0                              0  
+2024-02-16 17:30:01,500; - INFO; - 3. Load data
+2024-02-16 17:30:02,918; - INFO; - 	 Prepersons  loaded: 3705
+2024-02-16 17:30:02,919; - INFO; - Done ETL-Preleads process successfully

@@ -1,0 +1,7 @@
+Imprimiendo fecha y hora
+2023-10-17 22:45:00
+Activando entorno virtual
+Ruta entorno virtual: /Users/flores_daysi/dev-crones/virtual-space/etl-extration-virtual/bin/
+Ejecutar script  que descarga e inserta información de poleos del trafico de interfaces a dwh cada 4 minutos
+/Users/flores_daysi/dev-crones/etl-extraccion-poleos/main_tiempo_respuesta.py
+Terminó el proceso
