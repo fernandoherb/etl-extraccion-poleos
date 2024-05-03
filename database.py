@@ -1,7 +1,7 @@
 import os
 import psycopg2
 import psycopg2.extras
-import _scproxy
+#import _scproxy
 import pymssql
 # import pyodbc
 import mysql.connector as sql
