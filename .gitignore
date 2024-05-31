@@ -1,9 +1,13 @@
 /files
 __pycache__
 .env
+.env2
 .DS_Store
 input_files/*
 !input_files/.gitkeep
+
+logs/*
+!logs/.gitkeep
 
 output_files/*
 !output_files/.gitkeep

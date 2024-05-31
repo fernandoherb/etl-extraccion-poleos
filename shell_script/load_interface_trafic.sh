@@ -3,10 +3,10 @@
 export PATH=$PATH:$HOME/bin
 export PATH=$HOME/.local/bin:$PATH
 
-MAIN_DIR="/Users/flores_daysi/dev-crones/"
+MAIN_DIR="/home/vanti/Proyectos/"
 #WORK_DIR=$MAIN_DIR"ctf-automation/"
 SOURCE_CODE_DIR=$MAIN_DIR"etl-extraccion-poleos/"
-PY_BIN_DIR=$MAIN_DIR"virtual-space/v_etl_bestel/bin/"
+PY_BIN_DIR=$MAIN_DIR"env1/bin/"
 FECHA=$(date +"%Y-%m-%d %H:%M:%S")
 
 echo "Imprimiendo fecha y hora"

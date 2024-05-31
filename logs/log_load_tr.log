@@ -1,6 +1,0 @@
-Imprimiendo fecha y hora
-2024-02-24 01:48:00
-Activando entorno virtual
-Ruta entorno virtual: /Users/flores_daysi/dev-crones/virtual-space/v_etl_bestel/bin/
-Ejecutar script  que descarga e inserta información de poleos a dwh cada 4 minutos
-/Users/flores_daysi/dev-crones/etl-extraccion-poleos/main_tiempo_respuesta.py

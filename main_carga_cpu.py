@@ -105,7 +105,7 @@ def convertir_a_entero(valor):
     if pd.notna(valor):
         return int(valor)
     else:
-        return None
+        return pd.NA
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,0 @@
-2024-02-24 01:45:01,198; - INFO; - Init ETL-Preleads process
-2024-02-24 01:45:01,198; - INFO; - Inicio 1708760701.198575
-2024-02-24 01:45:01,198; - INFO; - 1. Extract data
-Ocurrió un error al conectar a SQL Server:  (20009, b'DB-Lib error message 20009, severity 9:\nUnable to connect: Adaptive Server is unavailable or does not exist (172.27.252.66)\nNet-Lib error during Operation timed out (60)\nDB-Lib error message 20009, severity 9:\nUnable to connect: Adaptive Server is unavailable or does not exist (172.27.252.66)\nNet-Lib error during Operation timed out (60)\n')
-2024-02-24 01:46:01,273; - ERROR; - Error(s) ocurred in extract data process: local variable 'conn' referenced before assignment
-2024-02-24 01:46:01,274; - INFO; - Done ETL-Preleads process with erros
