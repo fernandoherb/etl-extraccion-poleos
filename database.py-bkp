@@ -18,13 +18,12 @@ def get_credentials_prod():
         'password': os.getenv("PWD_DB_PROD")
     }
 
-def get_credentials_h():
+def get_credentials_bi():
     return {
-        'host': os.getenv("HOST_DB_H"),
-        'database': os.getenv("NAME_DB_H"),
-        'user': os.getenv("USER_DB_H"),
-        'port': os.getenv("PORT_DB_H"),
-        'password': os.getenv("PWD_DB_H")
+        'host': os.getenv("HOST_DB_BI"),
+        'database': os.getenv("NAME_DB_BI"),
+        'user': os.getenv("USER_DB_BI"),
+        'password': os.getenv("PWD_DB_BI")
     }
 
 def get_credentials():
@@ -32,7 +31,6 @@ def get_credentials():
         'host': os.getenv("HOST_DB"),
         'database': os.getenv("NAME_DB"),
         'user': os.getenv("USER_DB"),
-        'port': os.getenv("PORT_DB"),
         'password': os.getenv("PWD_DB")
     }
 
@@ -70,23 +68,6 @@ def execute_select_query_pandas(query: str):
     conn.close()
     return results
 
-## Connection to database Postgres
-def get_connection_postg_helix():
-    try:
-        db_credentials = get_credentials_h()
-        conn = psycopg2.connect(**db_credentials)
-    except psycopg2.Error as e:
-        # Captura y maneja las excepciones de psycopg2
-        print("Error de PostgreSQL:", e)
-    return conn
-
-## Excute select to database Postgres
-def execute_select_query_pandas_helix(query: str):
-    conn = get_connection_postg_helix()
-    results = pd.read_sql(query, conn)
-    conn.close()
-    return results
-
 ## Insert to database Postgres
 def execute_insert_query_postg(query: str):
     conn = get_connection_postg()
@@ -95,81 +76,6 @@ def execute_insert_query_postg(query: str):
     conn.commit()
     cursor.close()
     conn.close()
-
-def query_select_detalle_tickets_helix():
-    return """
-        /* Nuevo reporte solicitado */
-        select submitter "usuarioreporta",
-        incident_number "numreportesoc",
-        incident_number "numreportebestel",
-        responsabilidad_del_incidente_ "responsable",
-        assignee "ingasignado",  
-        regexp_replace(detailed_decription, '[^a-zA-Z0-9: ]', '', 'g') "detalle",
-        resolution "actividad",
-        to_char(to_timestamp(submit_date),'YYYY-MM-DD HH24:MI:SS') "fc_fechacreacion",
-        status,
-        priority "prioridad",
-        impact "severidad",
-        resolution_category_tier_2 "descripcion",
-        CASE  
-            WHEN (tiempo_de_afectacion_minutos) > 0 then 1 else 0	
-            end as boafectacion,
-        case
-            WHEN bst2_tiempo_afectación_concil > 0 then 1 else 0
-            end as boatribuible,
-        1 as ticketstatus,
-        case
-            when resolution_category_tier_2 = 'Servicios' then 1
-            when resolution_category_tier_2 = 'Física' then 2
-            when resolution_category_tier_2 = 'Lógica' then 3
-            when resolution_category_tier_2 = 'Revision' then 4
-            else 5
-            end as tipofalla_id,  
-        1 as tiporrequerimiento_id,
-        CASE  WHEN resolution_category='Causa de falla' then 1 else 2 end as tickettipo_id,
-        CASE  
-            when impact = 3000 then 3
-            when impact = 2000 then 2
-            when impact = 1000 then 1
-            else 1
-        END
-        as criticidadticket_id,
-        CASE  
-            WHEN position('CID: ID' IN detailed_decription) > 0 THEN
-                        substring(
-                        regexp_replace(
-                        substring(
-                        detailed_decription,
-                        position('CID: ID' IN detailed_decription) + length('CID: ID'),12), '[^0-9]', '', 'g')FROM 1 FOR 6)
-            
-            WHEN position('ID' IN detailed_decription) > 0 THEN
-                substring(
-                regexp_replace(
-                        substring(
-                        detailed_decription,
-                        position('ID' IN detailed_decription) + length('ID'),12), '[^0-9]', '', 'g')FROM 1 FOR 3)
-                ELSE     
-                    substring(regexp_replace(detailed_decription, '[^0-9]', '', 'g') FROM 1 FOR 3)            
-                END AS sitio_id,
-                
-                --substring(regexp_replace(detailed_decription, '[^0-9]/d+', '', '') FROM 1 FOR 3) as id_3,
-                --substring(regexp_replace(detailed_decription, '[^0-9]', '', 'g') FROM 1 FOR 3)
-        to_char(to_timestamp(submit_date),'YYYY-MM-DD HH24:MI:SS')  "fc_inicioticket",
-        to_char(to_timestamp(closed_date),'YYYY-MM-DD HH24:MI:SS')  "fc_finticket",
-        case
-        WHEN (closed_date-submit_date) > 0 then (closed_date-submit_date)/3600.0
-                else 0
-                end as duracion,
-                
-        tiempo_de_afectacion_minutos "tiempo_afectacion_minutos",
-        tiempo_afectación_atribuible_ "tiempo_afectacion_atribuible",
-        bst2_tiempo_afectación_concil "bst2_tiempo_afectacion_concil"
-        
-        FROM hpd_help_desk
-        WHERE (organization ='SERVICIO DE ADMINISTRACION TRIBUTARIA' OR organization ='SERVICIO DE ADMINISTRACION TRIBUTARIA SAT') AND
-        to_timestamp(submit_date) AT TIME ZONE 'America/Mexico_City'  >= CURRENT_TIMESTAMP AT TIME ZONE 'America/Mexico_City' - INTERVAL '1 hour' 
-        order by submit_date desc;
-        """
 
 def query_select_detalle_trafico_interface():
     return """   

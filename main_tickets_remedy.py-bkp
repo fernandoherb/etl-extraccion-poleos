@@ -29,7 +29,6 @@ def main():
         logger.info('fin %s',str(fin))
         logger.info('Tiempo de ejecucion: %s',str(fin-inicio))
         logger.info('Pruebas de conexión y extracción tickets: %s',str(len(tickets)))
-        logger.info(tickets.head(1))
         ## Procesando tabla de leads_lead
         
         fields = [*database.tbl_detalle_tickets_remedy().values()]
@@ -52,8 +51,8 @@ def extract_process():
 #        str_date = str(yesterday)
         #str_date = str(yesterday)
 
-        #tickets = utils.load_csv_data(configs.ROOT_DIR + configs.INPUT_FILES_DIR + 'tickets.csv', ',')
-        tickets = database.execute_select_query_pandas_helix(database.query_select_detalle_tickets_helix())
+        tickets = utils.load_csv_data(configs.ROOT_DIR + configs.INPUT_FILES_DIR + 'tickets.csv', ',')
+        #tiempo_respuesta = database.select_data_frame(database.query_select_detalle_tiempo_respuesta_carga_cpu())
 
         return tickets
     except Exception as e:
@@ -70,18 +69,11 @@ def transform_process(data_frame, fields):
         data_frame['fc_fechacreacion'] = datetime.now()
         #data_frame['detalle'] = data_frame['detalle'].str.replace("'", ' ')
         #data_frame['detalle'] = 'Datos Mock, Datos Mock, Datos Mock'
-        #data_frame['actividad'] = 'Datos Mock, Datos Mock, Datos Mock'
-        vacios_nulos = data_frame[data_frame['sitio_id'].isna() | (data_frame['sitio_id'] == '')]
-        print(str(len(vacios_nulos)))
-        data_frame['actividad'] = data_frame['actividad'].apply(quitar_comillas)
-        # Reemplazar valores vacíos por cero
-        data_frame['sitio_id'] = data_frame['sitio_id'].replace('', 0)
-        data_frame['sitio_id'] = data_frame['sitio_id'].replace(pd.NA, 0)
+        data_frame['actividad'] = 'Datos Mock, Datos Mock, Datos Mock'
 
         # Aplicar la función solo a las columnas A, B y C
-        columnas_a_convertir = ['tiempo_afectacion_minutos', 'tiempo_afectacion_atribuible', 'bst2_tiempo_afectacion_concil']
+        columnas_a_convertir = ['min_response_time', 'max_response_time', 'avg_response_time', 'porcent_loss', 'min_load', 'max_load', 'avg_load_cpu', 'total_memory']
         data_frame[columnas_a_convertir] = data_frame[columnas_a_convertir].applymap(convertir_a_entero)
-        print("Columnas en el DataFrame:", data_frame.columns)
 
 
         return data_frame
@@ -120,14 +112,7 @@ def convertir_a_entero(valor):
     if pd.notna(valor):
         return int(valor)
     else:
-        return pd.NA
-
-# Función para quitar comillas simples y dobles
-def quitar_comillas(valor):
-    if pd.notna(valor):
-        return valor.replace("'", "").replace('"', "")
-    return valor
+        return None
 
 if __name__ == "__main__":
     main()
-
