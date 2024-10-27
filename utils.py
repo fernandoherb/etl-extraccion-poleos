@@ -72,6 +72,30 @@ def construct_update_query(entity: str, data: dict, id:dict):
     #print(updates)
     return updates
 
+#### Función para generar querys de actualización
+def v_dos_construct_update_query(entity: str, data: dict, id: dict):
+    if len(data) == 0:
+        return
+    
+    updates = 'BEGIN;\n'
+    for index, row in enumerate(data):
+        updates += f'UPDATE {entity} SET '
+        
+        set_statements = []
+        for key, value in row.items():
+            if str(value) in ['nan', '<NA>', 'None']:
+                set_statements.append(f"{key} = NULL")
+            else:
+                set_statements.append(f"{key} = '{value}'")
+        
+        updates += ", ".join(set_statements)
+        
+        updates += f" WHERE nodo_id = '{id[index]}'; \n"
+    
+    updates += 'COMMIT;'
+    #print(updates)
+    return updates
+
 def construct_delete_query(entity, leads_frame):
     ## Construcción de delete para tablas
     query =  'BEGIN;\n DELETE FROM ' + entity + ' WHERE id in (\n'

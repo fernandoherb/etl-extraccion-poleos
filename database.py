@@ -96,6 +96,15 @@ def execute_insert_query_postg(query: str):
     cursor.close()
     conn.close()
 
+## Insert to database Postgres ----- Agregar nueva funcion
+def execute_update_query_beste_postg(query: str):
+    conn = get_connection_postg()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    rest = cursor.execute(query)
+    conn.commit()
+    cursor.close()
+    conn.close()
+
 def query_select_detalle_tickets_helix():
     return """
         /* Nuevo reporte solicitado */
@@ -170,6 +179,37 @@ def query_select_detalle_tickets_helix():
         to_timestamp(submit_date) AT TIME ZONE 'America/Mexico_City'  >= CURRENT_TIMESTAMP AT TIME ZONE 'America/Mexico_City' - INTERVAL '1 hour' 
         order by submit_date desc;
         """
+
+def query_select_ct_nodo():
+    return """   
+        select cn.nodeid as nodo_id,CURRENT_TIMESTAMP as fecha_origen,CURRENT_TIMESTAMP as fecha_origen_cpu,CURRENT_TIMESTAMP,0 as min_response_time
+        ,0 as max_response_time,0 as avg_response_time,100 as porcent_loss,0 as availability,0 as min_load,0 as max_load,0 as avg_load_cpu,0 as total_memory
+        ,0 as min_memory_used,0 as max_memory_used,0 as avg_memory_used,10000 as porcent_memory_used,0 as weight
+        from ct_nodo cn ;
+    """
+
+def query_select_ct_nodo_cpu():
+    return """   
+        select cn.nodeid as nodo_id, CURRENT_TIMESTAMP as fecha_origen, CURRENT_TIMESTAMP as fecha_creacion, 0 as min_load, 0 as max_load, 0 as avg_load_cpu
+        , 0 as total_memory, 0 as min_memory_used, 0 as max_memory_used, 0 as avg_memory_used, 10000 as porcent_memory_used, 0 as weight
+        from ct_nodo cn ;
+    """
+
+def query_select_ct_interface():
+    return """   
+        select ci.interfaceid as interface_id, CURRENT_TIMESTAMP as fecha_origen, CURRENT_TIMESTAMP as fecha_creacion, ci.nodo_id, 0 as in_avg_bps, 0 as in_min_bps, 0 as in_max_bps, 0 as in_total_bytes
+            , 0 as in_total_pkts, 0 as in_avg_unicast_pkts, 0 as in_min_unicast_pkts, 0 as in_max_unicast_pkts, 0 as in_avg_multicast_pkts, 0 as in_min_multicast_pkts, 0 as in_max_multicast_pkts
+            , 0 as out_avg_bps, 0 as out_min_bps, 0 as out_max_bps, 0 as out_total_bytes, 0 as out_total_pkts, 0 as out_avg_unicast_pkts, 0 as out_min_unicast_pkts, 0 as out_max_unicast_pkts
+            , 0 as out_avg_multicast_pkts, 0 as out_min_multicast_pkts, 0 as out_max_multicast_pkts, 0 as weight
+        from ct_interface ci inner join ct_nodo cn on cn.nodeid = ci.nodo_id ;
+    """
+
+def query_select_ct_errores_interface():
+    return """   
+        select ci.nodo_id, CURRENT_TIMESTAMP as fecha_origen, ci.interfaceid as interface_id, 0 as in_discards, 0 as in_errors, 0 as out_discards
+        , 0 as out_errors, 0 as late_collisions, 0 as crca_lign_errors, 0 as weight
+        from ct_interface ci inner join ct_nodo cn on cn.nodeid = ci.nodo_id ;
+    """
 
 def query_select_detalle_trafico_interface():
     return """   

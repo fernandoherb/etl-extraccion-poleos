@@ -34,7 +34,9 @@ def main():
         fields = [*database.tbl_detalle_trafico_interface().values()]
         transformed_data = transform_process(trafico_interface, fields)
         
-        load_process(transformed_data, 'insert', configs.schema_public+'.'+ configs.detalle_trafico_interface, configs.OUTPUT_ETL_LOAD_TRAFICO_INTERFACE_QUERY_FILENAME, fields)
+#        load_process(transformed_data, 'insert', configs.schema_public+'.'+ configs.detalle_trafico_interface, configs.OUTPUT_ETL_LOAD_TRAFICO_INTERFACE_QUERY_FILENAME, fields)
+        load_process(transformed_data, 'update', configs.schema_public+'.'+ configs.detalle_trafico_interface, configs.OUTPUT_ETL_UPDATE_LOAD_TRAFICO_INTERFACE_QUERY_FILENAME, fields)
+
     except Exception as e:
         logger.error("Error(s) ocurred in %s", str(e))
         logger.info('Done ETL-Preleads process with erros')
@@ -68,6 +70,18 @@ def transform_process(data_frame, fields):
         #columnas_a_convertir = ['min_response_time', 'max_response_time', 'avg_response_time', 'porcent_loss', 'min_load', 'max_load', 'avg_load_cpu', 'total_memory']
         #data_frame[columnas_a_convertir] = data_frame[columnas_a_convertir].applymap(convertir_a_entero)
 
+        # Consulta el catalgo de nodos ############ CAMBIAR POR INTERFACES
+        ct_interfaces = database.execute_select_query_pandas(database.query_select_ct_interface())
+        # Encuentra los nodos faltantes usando `merge`
+        nodos_faltantes = ct_interfaces[~ct_interfaces['interface_id'].isin(data_frame['interface_id'])]
+        
+        logger.info('Interfaces faltantes:::::: '+str(len(nodos_faltantes)))
+                
+        # Concatenamos `df_poleos` con `ct_interfaces_faltantes`
+        data_frame = pd.concat([data_frame, nodos_faltantes], ignore_index=True)
+
+        logger.info('Cuantos interfaces modificará:::::: '+str(len(data_frame)))
+        ############ FIN CAMBIAR POR INTERFACES
 
         return data_frame
     except Exception as e:
@@ -79,12 +93,12 @@ def load_process(data_frame, query, entitys, name_file,table_fields):
     # Construct preleads inserts query, save query in text file and execute it
     try:
         if query == 'update':
-            ids = data_frame['id']
+            ids = data_frame['interface_id']
             data_frame = data_frame[data_frame.columns[data_frame.columns.isin(table_fields)]].reindex(columns=table_fields)
-            preleads_update_query = utils.construct_update_query(entity=entitys, data=data_frame.to_dict(orient='records'),id=ids) 
+            preleads_update_query = utils.v_dos_construct_update_query(entity=entitys, data=data_frame.to_dict(orient='records'),id=ids) 
             utils.save_text_data(preleads_update_query, configs.ROOT_DIR + configs.OUTPUT_FILES_DIR + name_file + '.txt')
             
-            #database.execute_update_query(preleads_update_query)
+            database.execute_update_query_beste_postg(preleads_update_query)
             
         elif query == 'insert':
             data_frame = data_frame[data_frame.columns[data_frame.columns.isin(table_fields)]].reindex(columns=table_fields)

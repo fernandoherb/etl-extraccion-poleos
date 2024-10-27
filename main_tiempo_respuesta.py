@@ -34,7 +34,10 @@ def main():
         fields = [*database.tbl_detalle_tiempo_respuesta().values()]
         transformed_data = transform_process(tiempo_respuesta, fields)
         
-        load_process(transformed_data, 'insert', configs.schema_public+'.'+ configs.detalle_tiempo_respuesta, configs.OUTPUT_ETL_LOAD_TIEMPO_RESPUESTA_QUERY_FILENAME, fields)
+        #load_process(transformed_data, 'insert', configs.schema_public+'.'+ configs.detalle_tiempo_respuesta, configs.OUTPUT_ETL_LOAD_TIEMPO_RESPUESTA_QUERY_FILENAME, fields)
+   
+        load_process(transformed_data, 'update', configs.schema_public+'.'+ configs.detalle_tiempo_respuesta, configs.OUTPUT_ETL_UPDATE_LOAD_TIEMPO_RESPUESTA_QUERY_FILENAME, fields)
+    
     except Exception as e:
         logger.error("Error(s) ocurred in %s", str(e))
         logger.info('Done ETL-Preleads process with erros')
@@ -68,6 +71,17 @@ def transform_process(data_frame, fields):
         columnas_a_convertir = ['min_response_time', 'max_response_time', 'avg_response_time', 'porcent_loss', 'min_load', 'max_load', 'avg_load_cpu', 'total_memory']
         data_frame[columnas_a_convertir] = data_frame[columnas_a_convertir].applymap(convertir_a_entero)
 
+        # Consulta el catalgo de nodos
+        ct_nodos = database.execute_select_query_pandas(database.query_select_ct_nodo())
+        # Encuentra los nodos faltantes usando `merge`
+        nodos_faltantes = ct_nodos[~ct_nodos['nodo_id'].isin(data_frame['nodo_id'])]
+        
+        logger.info('Nodos faltantes:::::: '+str(len(nodos_faltantes)))
+                
+        # Concatenamos `df_poleos` con `nodos_faltantes`
+        data_frame = pd.concat([data_frame, nodos_faltantes], ignore_index=True)
+
+        logger.info('Cuantos nodos modificará:::::: '+str(len(data_frame)))
 
         return data_frame
     except Exception as e:
@@ -78,13 +92,13 @@ def load_process(data_frame, query, entitys, name_file,table_fields):
     logger.info('3. Load data')
     # Construct preleads inserts query, save query in text file and execute it
     try:
-        if query == 'update':
-            ids = data_frame['id']
+        if query == 'update': ## Se tiene que actualizar en el principal
+            ids = data_frame['nodo_id']
             data_frame = data_frame[data_frame.columns[data_frame.columns.isin(table_fields)]].reindex(columns=table_fields)
-            preleads_update_query = utils.construct_update_query(entity=entitys, data=data_frame.to_dict(orient='records'),id=ids) 
+            preleads_update_query = utils.v_dos_construct_update_query(entity=entitys, data=data_frame.to_dict(orient='records'),id=ids) 
             utils.save_text_data(preleads_update_query, configs.ROOT_DIR + configs.OUTPUT_FILES_DIR + name_file + '.txt')
             
-            #database.execute_update_query(preleads_update_query)
+            database.execute_update_query_beste_postg(preleads_update_query)
             
         elif query == 'insert':
             data_frame = data_frame[data_frame.columns[data_frame.columns.isin(table_fields)]].reindex(columns=table_fields)
