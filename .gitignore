@@ -2,6 +2,7 @@
 __pycache__
 .env
 .env2
+envi
 .DS_Store
 input_files/*
 !input_files/.gitkeep

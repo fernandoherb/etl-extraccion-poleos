@@ -18,6 +18,7 @@ BPS_REGISTER_FILE = 'bps_loads_register.json'
 
 OUTPUT_ETL_LOAD_TIEMPO_RESPUESTA_QUERY_FILENAME = 'query_insert_detalle_tiempo_respuesta'
 OUTPUT_ETL_LOAD_TRAFICO_INTERFACE_QUERY_FILENAME = 'query_insert_detalle_trafico_interface'
+OUTPUT_ETL_LOAD_ERROR_INTERFACE_QUERY_FILENAME = 'query_insert_detalle_error_interface'
 OUTPUT_ETL_LOAD_CARGA_CPU_QUERY_FILENAME = 'query_insert_detalle_carga_cpu'
 OUTPUT_ETL_LOAD_CARGA_TICKETS_QUERY_FILENAME = 'query_insert_detalle_tickets'
 
@@ -27,5 +28,6 @@ schema_historico = 'historico'
 # Config tables
 detalle_tiempo_respuesta = 'detalle_tiempo_respuesta_cpu_load'
 detalle_trafico_interface = 'detalle_trafico_interface'
+detalle_error_interface = 'test_errors' #'detalle_error_interface'
 detalle_carga_cpu = 'detalle_carga_cpu'
 dt_ticket = 'dt_ticket'

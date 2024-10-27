@@ -184,6 +184,24 @@ def query_select_detalle_trafico_interface():
         ) as sub on sub.Timestamp = itd.[Timestamp] and sub.NodeID = itd.NodeID and sub.InterfaceID = itd.InterfaceID;
     """
 
+def query_select_detalle_error_interface():
+    return """   
+        SELECT ncp.NodeID, iecd.[Timestamp] AS fecha_origen,iecd.InterfaceID,iecd.In_Discards, iecd.In_Errors, iecd.Out_Discards, iecd.Out_Errors, iecd.LateCollisions, iecd.CRCAlignErrors,iecd.Weight
+        FROM InterfaceErrors_CS_Detail AS iecd
+        INNER JOIN NodesCustomProperties ncp ON iecd.NodeID = ncp.NodeID
+        INNER JOIN (
+            SELECT iitcd.NodeID, iitcd.InterfaceID, MAX(iitcd.[Timestamp]) AS Timestamp
+            FROM InterfaceErrors_CS_Detail iitcd
+            INNER JOIN NodesCustomProperties ncp ON iitcd.NodeID = ncp.NodeID
+            WHERE ncp.CustomerName = 'SAT' 
+            AND iitcd.[Timestamp] > DATEADD(SECOND, -360, CURRENT_TIMESTAMP)
+            GROUP BY iitcd.NodeID, iitcd.InterfaceID
+        ) AS sub ON sub.Timestamp = iecd.[Timestamp] 
+        AND sub.NodeID = iecd.NodeID 
+        AND sub.InterfaceID = iecd.InterfaceID
+        WHERE iecd.[Timestamp] >= DATEADD(SECOND, -150, sub.Timestamp) AND iecd.[Timestamp] <= DATEADD(SECOND, +120, sub.Timestamp);
+    """
+
 def query_select_detalle_tiempo_respuesta_carga_cpu():
     return """   
         SELECT ncp.NodeID ,rtcd.[Timestamp] as fecha_origen, ccd.[Timestamp] as fecha_origen_cpu, rtcd.MinResponseTime ,rtcd.MaxResponseTime ,rtcd.AvgResponseTime ,rtcd.PercentLoss ,rtcd.Availability 
@@ -251,4 +269,11 @@ def tbl_detalle_carga_cpu():
     "nodo_id": "nodo_id", "fecha_origen ": "fecha_origen", "min_load ": "min_load", "max_load ": "max_load", "avg_load_cpu ": "avg_load_cpu"
     , "total_memory ": "total_memory", "min_memory_used ": "min_memory_used", "max_memory_used ": "max_memory_used", "avg_memory_used ": "avg_memory_used"
     , "porcent_memory_used ": "porcent_memory_used", "weight ": "weight"
+    }
+
+def tbl_detalle_error_interface():
+    return {
+    "nodo_id": "nodo_id", "fecha_origen ": "fecha_origen", "interface_id ": "interface_id", "in_discards ": "in_discards", "in_errors ": "in_errors"
+    , "out_discards ": "out_discards", "out_errors ": "out_errors", "late_collisions ": "late_collisions", "crca_lign_errors ": "crca_lign_errors"
+    , "weight ": "weight"
     }
