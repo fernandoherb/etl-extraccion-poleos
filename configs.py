@@ -33,6 +33,6 @@ schema_historico = 'historico'
 # Config tables
 detalle_tiempo_respuesta = 'detalle_tiempo_respuesta_cpu_load'
 detalle_trafico_interface = 'detalle_trafico_interface'
-detalle_error_interface = 'detalle_error_interface' #'test_errors'
+detalle_error_interface = 'detalle_errores_interface'
 detalle_carga_cpu = 'detalle_carga_cpu'
 dt_ticket = 'dt_ticket'

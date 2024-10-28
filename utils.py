@@ -77,6 +77,8 @@ def v_dos_construct_update_query(entity: str, data: dict, id: dict):
     if len(data) == 0:
         return
     
+    exists_interface_id = any('interface_id' in item for item in data)
+
     updates = 'BEGIN;\n'
     for index, row in enumerate(data):
         updates += f'UPDATE {entity} SET '
@@ -90,7 +92,10 @@ def v_dos_construct_update_query(entity: str, data: dict, id: dict):
         
         updates += ", ".join(set_statements)
         
-        updates += f" WHERE nodo_id = '{id[index]}'; \n"
+        if exists_interface_id:
+            updates += f" WHERE interface_id = '{id[index]}'; \n"
+        else:
+            updates += f" WHERE nodo_id = '{id[index]}'; \n"
     
     updates += 'COMMIT;'
     #print(updates)
