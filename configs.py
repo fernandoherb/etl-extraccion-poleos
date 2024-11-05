@@ -36,3 +36,8 @@ detalle_trafico_interface = 'detalle_trafico_interface'
 detalle_error_interface = 'detalle_errores_interface'
 detalle_carga_cpu = 'detalle_carga_cpu'
 dt_ticket = 'dt_ticket'
+
+detalle_carga_cpu_7d = 'detalle_carga_cpu_7d'
+detalle_tiempo_respuesta_7d = 'detalle_tiempo_respuesta_cpu_load_7d'
+detalle_trafico_interface_7d = 'detalle_trafico_interface_7d'
+detalle_error_interface_7d = 'detalle_errores_interface_7d'

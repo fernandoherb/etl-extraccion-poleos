@@ -34,8 +34,10 @@ def main():
         fields = [*database.tbl_detalle_carga_cpu().values()]
         transformed_data = transform_process(carga_cpu, fields)
         
-#        load_process(transformed_data, 'insert', configs.schema_public+'.'+ configs.detalle_carga_cpu, configs.OUTPUT_ETL_LOAD_CARGA_CPU_QUERY_FILENAME, fields)
-        load_process(transformed_data, 'update', configs.schema_public+'.'+ configs.detalle_carga_cpu, configs.OUTPUT_ETL_UPDATE_LOAD_CARGA_CPU_QUERY_FILENAME, fields)
+        load_process(transformed_data, 'insert', configs.schema_public+'.'+ configs.detalle_carga_cpu, configs.OUTPUT_ETL_LOAD_CARGA_CPU_QUERY_FILENAME, fields)
+        load_process(transformed_data, 'insert', configs.schema_historico+'.'+ configs.detalle_carga_cpu_7d, configs.OUTPUT_ETL_LOAD_CARGA_CPU_QUERY_FILENAME, fields)
+        database.execute_delete_postg("DELETE FROM historico.detalle_carga_cpu_7d WHERE fecha_creacion < CURRENT_TIMESTAMP - INTERVAL '7 days';")
+#        load_process(transformed_data, 'update', configs.schema_public+'.'+ configs.detalle_carga_cpu, configs.OUTPUT_ETL_UPDATE_LOAD_CARGA_CPU_QUERY_FILENAME, fields)
         
     except Exception as e:
         logger.error("Error(s) ocurred in %s", str(e))
@@ -105,6 +107,7 @@ def load_process(data_frame, query, entitys, name_file,table_fields):
             utils.save_text_data(preleads_inserts_query, configs.ROOT_DIR + configs.OUTPUT_FILES_DIR + name_file + '.txt')
 
             database.execute_insert_query_postg(preleads_inserts_query)
+
 
     except Exception as e:
         logger.debug('traceback error %s:', str(traceback.format_exc()))

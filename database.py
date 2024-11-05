@@ -105,6 +105,15 @@ def execute_update_query_beste_postg(query: str):
     cursor.close()
     conn.close()
 
+## Insert to database Postgres ----- Agregar nueva funcion
+def execute_delete_postg(query: str):
+    conn = get_connection_postg()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    rest = cursor.execute(query)
+    conn.commit()
+    cursor.close()
+    conn.close()
+
 def query_select_detalle_tickets_helix():
     return """
         /* Nuevo reporte solicitado */

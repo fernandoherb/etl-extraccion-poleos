@@ -34,8 +34,10 @@ def main():
         fields = [*database.tbl_detalle_error_interface().values()]
         transformed_data = transform_process(error_interface, fields)
         
-#        load_process(transformed_data, 'insert', configs.schema_public+'.'+ configs.detalle_error_interface, configs.OUTPUT_ETL_LOAD_ERROR_INTERFACE_QUERY_FILENAME, fields)
-        load_process(transformed_data, 'update', configs.schema_public+'.'+ configs.detalle_error_interface, configs.OUTPUT_ETL_UPDATE_LOAD_ERROR_INTERFACE_QUERY_FILENAME, fields)
+        load_process(transformed_data, 'insert', configs.schema_public+'.'+ configs.detalle_error_interface, configs.OUTPUT_ETL_LOAD_ERROR_INTERFACE_QUERY_FILENAME, fields)
+        load_process(transformed_data, 'insert', configs.schema_historico+'.'+ configs.detalle_error_interface_7d, configs.OUTPUT_ETL_LOAD_ERROR_INTERFACE_QUERY_FILENAME, fields)
+        database.execute_delete_postg("DELETE FROM historico.detalle_errores_interface_7d WHERE fecha_creacion < CURRENT_TIMESTAMP - INTERVAL '7 days';")        
+        #load_process(transformed_data, 'update', configs.schema_public+'.'+ configs.detalle_error_interface, configs.OUTPUT_ETL_UPDATE_LOAD_ERROR_INTERFACE_QUERY_FILENAME, fields)
 
     except Exception as e:
         logger.error("Error(s) ocurred in %s", str(e))
