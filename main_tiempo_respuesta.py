@@ -36,7 +36,9 @@ def main():
         
         load_process(transformed_data, 'insert', configs.schema_public+'.'+ configs.detalle_tiempo_respuesta, configs.OUTPUT_ETL_LOAD_TIEMPO_RESPUESTA_QUERY_FILENAME, fields)
         load_process(transformed_data, 'insert', configs.schema_historico+'.'+ configs.detalle_tiempo_respuesta_7d, configs.OUTPUT_ETL_LOAD_TIEMPO_RESPUESTA_QUERY_FILENAME, fields)
-        database.execute_delete_postg("DELETE FROM historico.detalle_tiempo_respuesta_cpu_load_7d WHERE fecha_creacion < CURRENT_TIMESTAMP - INTERVAL '7 days';")        
+        database.execute_delete_postg("DELETE FROM historico.detalle_tiempo_respuesta_cpu_load_7d WHERE fecha_creacion < CURRENT_TIMESTAMP - INTERVAL '7 days';")      
+        database.refresh_materialized_view("REFRESH MATERIALIZED VIEW public.detalle_tiempo_respuesta_cpu_load_ultimas_24hrs;")      
+        database.refresh_materialized_view("REFRESH MATERIALIZED VIEW public.disp_materialized;")  
         #load_process(transformed_data, 'update', configs.schema_public+'.'+ configs.detalle_tiempo_respuesta, configs.OUTPUT_ETL_UPDATE_LOAD_TIEMPO_RESPUESTA_QUERY_FILENAME, fields)
     
     except Exception as e:

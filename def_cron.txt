@@ -1,1 +1,19 @@
 00 07 * * * sh /home/reports-compartfon/update_portin/etl-update-tblportin/shell_script/load_portin.sh > /home/reports-compartfon/update_portin/out.out
+
+#1.4.2 Ensure filesystem integrity is regularly checked
+0 5 * * * /usr/sbin/aide --check
+
+0 0 * * 0 truncate -s 0 /home/vanti/Proyectos/etl-extraccion-poleos/logs/log_check_pgpool.log
+
+* * * * * /home/vanti/Proyectos/etl-extraccion-poleos/shell_script/check_pgpool.sh >> /home/vanti/Proyectos/etl-extraccion-poleos/logs/log_check_pgpool.log 2>&1
+
+*/5 * * * * /home/vanti/Proyectos/etl-extraccion-poleos/shell_script/load_interface_error.sh > /home/vanti/Proyectos/etl-extraccion-poleos/logs/log_errores_interfaces.log
+
+0 * * * * /home/vanti/Proyectos/etl-extraccion-poleos/shell_script/load_tickets.sh > /home/vanti/Proyectos/etl-extraccion-poleos/logs/log_load_tickets.log
+
+*/5 * * * * /home/vanti/Proyectos/etl-extraccion-poleos/shell_script/load_cpu.sh > /home/vanti/Proyectos/etl-extraccion-poleos/logs/log_load_cpu.log
+
+*/5 * * * * /home/vanti/Proyectos/etl-extraccion-poleos/shell_script/load_interface_trafic.sh > /home/vanti/Proyectos/etl-extraccion-poleos/logs/log_load_interface_trafic.log
+
+#10 17 * * * /home/vanti/Proyectos/etl-extraccion-poleos/shell_script/load_tr.sh > /home/vanti/Proyectos/etl-extraccion-poleos/logs/log_load_tr.log
+*/4 * * * * /home/vanti/Proyectos/etl-extraccion-poleos/shell_script/load_tr.sh > /home/vanti/Proyectos/etl-extraccion-poleos/logs/log_load_tr.log

@@ -114,6 +114,20 @@ def execute_delete_postg(query: str):
     cursor.close()
     conn.close()
 
+## I
+def refresh_materialized_view(query: str):
+    conn = get_connection_postg()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(query)
+        conn.commit()
+    except Exception as e:
+        print(f"Error al refrescar la vista materializada: {e}")
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
+
 def query_select_detalle_tickets_helix():
     return """
         /* Nuevo reporte solicitado */
@@ -193,14 +207,14 @@ def query_select_ct_nodo():
     return """   
         select cn.nodeid as nodo_id,CURRENT_TIMESTAMP as fecha_origen,CURRENT_TIMESTAMP as fecha_origen_cpu,CURRENT_TIMESTAMP,0 as min_response_time
         ,0 as max_response_time,0 as avg_response_time,100 as porcent_loss,0 as availability,0 as min_load,0 as max_load,0 as avg_load_cpu,0 as total_memory
-        ,0 as min_memory_used,0 as max_memory_used,0 as avg_memory_used,10000 as porcent_memory_used,0 as weight
+        ,0 as min_memory_used,0 as max_memory_used,0 as avg_memory_used, 0 as porcent_memory_used,0 as weight
         from ct_nodo cn ;
     """
 
 def query_select_ct_nodo_cpu():
     return """   
         select cn.nodeid as nodo_id, CURRENT_TIMESTAMP as fecha_origen, CURRENT_TIMESTAMP as fecha_creacion, 0 as min_load, 0 as max_load, 0 as avg_load_cpu
-        , 0 as total_memory, 0 as min_memory_used, 0 as max_memory_used, 0 as avg_memory_used, 10000 as porcent_memory_used, 0 as weight
+        , 0 as total_memory, 0 as min_memory_used, 0 as max_memory_used, 0 as avg_memory_used, 0 as porcent_memory_used, 0 as weight
         from ct_nodo cn ;
     """
 
