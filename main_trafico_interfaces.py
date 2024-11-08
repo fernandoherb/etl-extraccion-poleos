@@ -35,7 +35,7 @@ def main():
         transformed_data = transform_process(trafico_interface, fields)
         
         load_process(transformed_data, 'insert', configs.schema_public+'.'+ configs.detalle_trafico_interface, configs.OUTPUT_ETL_LOAD_TRAFICO_INTERFACE_QUERY_FILENAME, fields)
-        load_process(transformed_data, 'insert', configs.schema_historico+'.'+ configs.detalle_trafico_interface_7d, configs.OUTPUT_ETL_LOAD_TRAFICO_INTERFACE_QUERY_FILENAME, fields)
+        load_process(transformed_data, 'insert', configs.schema_historico+'.'+ configs.detalle_trafico_interface_7d, configs.OUTPUT_ETL_LOAD_TRAFICO_INTERFACE_7D_QUERY_FILENAME, fields)
         database.execute_delete_postg("DELETE FROM historico.detalle_trafico_interface_7d WHERE fecha_creacion < CURRENT_TIMESTAMP - INTERVAL '7 days';")       
         database.refresh_materialized_view("REFRESH MATERIALIZED VIEW public.detalle_trafico_interface_ultimas_24hrs;")           
 #        load_process(transformed_data, 'update', configs.schema_public+'.'+ configs.detalle_trafico_interface, configs.OUTPUT_ETL_UPDATE_LOAD_TRAFICO_INTERFACE_QUERY_FILENAME, fields)

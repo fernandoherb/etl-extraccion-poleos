@@ -35,7 +35,7 @@ def main():
         transformed_data = transform_process(carga_cpu, fields)
         
         load_process(transformed_data, 'insert', configs.schema_public+'.'+ configs.detalle_carga_cpu, configs.OUTPUT_ETL_LOAD_CARGA_CPU_QUERY_FILENAME, fields)
-        load_process(transformed_data, 'insert', configs.schema_historico+'.'+ configs.detalle_carga_cpu_7d, configs.OUTPUT_ETL_LOAD_CARGA_CPU_QUERY_FILENAME, fields)
+        load_process(transformed_data, 'insert', configs.schema_historico+'.'+ configs.detalle_carga_cpu_7d, configs.OUTPUT_ETL_LOAD_CARGA_CPU_7D_QUERY_FILENAME, fields)
         database.execute_delete_postg("DELETE FROM historico.detalle_carga_cpu_7d WHERE fecha_creacion < CURRENT_TIMESTAMP - INTERVAL '7 days';")  
         database.refresh_materialized_view("REFRESH MATERIALIZED VIEW public.detalle_trafico_interface_ultimas_24hrs;")           
 #        load_process(transformed_data, 'update', configs.schema_public+'.'+ configs.detalle_carga_cpu, configs.OUTPUT_ETL_UPDATE_LOAD_CARGA_CPU_QUERY_FILENAME, fields)
