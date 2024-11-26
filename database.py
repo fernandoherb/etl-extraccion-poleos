@@ -199,7 +199,7 @@ def query_select_detalle_tickets_helix():
         
         FROM hpd_help_desk
         WHERE (organization ='SERVICIO DE ADMINISTRACION TRIBUTARIA' OR organization ='SERVICIO DE ADMINISTRACION TRIBUTARIA SAT' OR organization = 'FIDEICOMISO DE ADMINISTRACION Y PAGO NUMERO 80775') AND
-        to_timestamp(submit_date) AT TIME ZONE 'America/Mexico_City'  >= CURRENT_TIMESTAMP AT TIME ZONE 'America/Mexico_City' - INTERVAL '1 hour' 
+        to_timestamp(submit_date) AT TIME ZONE 'America/Mexico_City'  >= CURRENT_TIMESTAMP AT TIME ZONE 'America/Mexico_City' - INTERVAL '5 mins' 
         order by submit_date desc;
         """
 
