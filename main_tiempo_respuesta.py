@@ -143,9 +143,9 @@ def check_and_insert_status(data_frame):
         data_frame['nodo_id'] = data_frame['nodo_id'].astype(int)
         current_status_df['nodo_id'] = current_status_df['nodo_id'].astype(int)
 
-        # Convertir columnas a tipo float para la comparación
-        data_frame['availability'] = data_frame['availability'].astype(float)
-        current_status_df['estatus'] = pd.to_numeric(current_status_df['estatus'], errors='coerce')
+        # Convertir columnas de estatus y availability a enteros
+        data_frame['availability'] = pd.to_numeric(data_frame['availability'], errors='coerce').fillna(0).astype(int)
+        current_status_df['estatus'] = pd.to_numeric(current_status_df['estatus'], errors='coerce').fillna(0).astype(int)
 
         if current_status_df.empty:
             logger.info("No existen registros previos. Insertando todos los nuevos registros.")
@@ -194,10 +194,10 @@ def check_and_insert_status(data_frame):
         else:
             logger.info("No hay cambios en los estados de los nodos.")
 
+        # Eliminar registros antiguos
         database.execute_delete_postg("DELETE FROM public.detalle_estatus_nodos WHERE fecha_movimiento < CURRENT_TIMESTAMP - INTERVAL '24 hours';")      
 
         logger.info('**************************************')
-
 
     except Exception as e:
         logger.error(f"Error al verificar o insertar estados: {str(e)}")
