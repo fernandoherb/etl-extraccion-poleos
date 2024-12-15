@@ -149,7 +149,7 @@ def query_select_detalle_tickets_helix():
         case
             WHEN bst2_tiempo_afectación_concil > 0 then 1 else 0
             end as boatribuible,
-        1 as ticketstatus,
+        status as ticketstatus,
         case
             when resolution_category_tier_2 = 'Servicios' then 1
             when resolution_category_tier_2 = 'Física' then 2
