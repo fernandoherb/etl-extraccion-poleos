@@ -46,13 +46,6 @@ def main():
 def extract_process():
     logger.info('1. Extract data')
     try:
-        # Load data: Lineas expiradas DB
-        #today = datetime.date.today()
-        #yesterday = today - datetime.timedelta(days=1)
-#        str_date = str(yesterday)
-        #str_date = str(yesterday)
-
-        #tickets = utils.load_csv_data(configs.ROOT_DIR + configs.INPUT_FILES_DIR + 'tickets.csv', ',')
         tickets = database.execute_select_query_pandas_helix(database.query_select_detalle_tickets_helix())
 
         return tickets
@@ -64,13 +57,9 @@ def transform_process(data_frame, fields):
     logger.info('2. Transform data')
     try:
         # Apply preperson preprocessing (clean/normalize data)
-        #data_frame = utils.leads_lead_preprocessing(data_frame)
         data_frame.columns = fields
 
         data_frame['fc_fechacreacion'] = datetime.now()
-        #data_frame['detalle'] = data_frame['detalle'].str.replace("'", ' ')
-        #data_frame['detalle'] = 'Datos Mock, Datos Mock, Datos Mock'
-        #data_frame['actividad'] = 'Datos Mock, Datos Mock, Datos Mock'
         vacios_nulos = data_frame[data_frame['sitio_id'].isna() | (data_frame['sitio_id'] == '')]
         print(str(len(vacios_nulos)))
         data_frame['actividad'] = data_frame['actividad'].apply(quitar_comillas)
@@ -98,9 +87,7 @@ def load_process(data_frame, query, entitys, name_file,table_fields):
             data_frame = data_frame[data_frame.columns[data_frame.columns.isin(table_fields)]].reindex(columns=table_fields)
             preleads_update_query = utils.construct_update_query(entity=entitys, data=data_frame.to_dict(orient='records'),id=ids) 
             utils.save_text_data(preleads_update_query, configs.ROOT_DIR + configs.OUTPUT_FILES_DIR + name_file + '.txt')
-            
-            #database.execute_update_query(preleads_update_query)
-            
+                        
         elif query == 'insert':
             data_frame = data_frame[data_frame.columns[data_frame.columns.isin(table_fields)]].reindex(columns=table_fields)
             preleads_inserts_query = utils.construct_insert_query(entity=entitys, fields=table_fields, data=data_frame.to_dict(orient='records')) 

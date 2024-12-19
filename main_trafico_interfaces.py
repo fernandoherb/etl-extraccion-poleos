@@ -37,8 +37,6 @@ def main():
         load_process(transformed_data, 'insert', configs.schema_public+'.'+ configs.detalle_trafico_interface, configs.OUTPUT_ETL_LOAD_TRAFICO_INTERFACE_QUERY_FILENAME, fields)
         load_process(transformed_data, 'insert', configs.schema_historico+'.'+ configs.detalle_trafico_interface_7d, configs.OUTPUT_ETL_LOAD_TRAFICO_INTERFACE_7D_QUERY_FILENAME, fields)
         database.execute_delete_postg("DELETE FROM historico.detalle_trafico_interface_7d WHERE fecha_creacion < CURRENT_TIMESTAMP - INTERVAL '24 hours';")       
-        #database.refresh_materialized_view("REFRESH MATERIALIZED VIEW public.detalle_trafico_interface_ultimas_24hrs;")           
-#        load_process(transformed_data, 'update', configs.schema_public+'.'+ configs.detalle_trafico_interface, configs.OUTPUT_ETL_UPDATE_LOAD_TRAFICO_INTERFACE_QUERY_FILENAME, fields)
 
     except Exception as e:
         logger.error("Error(s) ocurred in %s", str(e))
@@ -52,7 +50,6 @@ def extract_process():
         # Load data: Lineas expiradas DB
         today = datetime.date.today()
         yesterday = today - datetime.timedelta(days=1)
-#        str_date = str(yesterday)
         str_date = str(yesterday)
 
         trafico_interfaces = database.select_data_frame(database.query_select_detalle_trafico_interface())
@@ -66,12 +63,7 @@ def transform_process(data_frame, fields):
     logger.info('2. Transform data')
     try:
         # Apply preperson preprocessing (clean/normalize data)
-        #data_frame = utils.leads_lead_preprocessing(data_frame)
         data_frame.columns = fields
-
-        # Aplicar la función solo a las columnas A, B y C
-        #columnas_a_convertir = ['min_response_time', 'max_response_time', 'avg_response_time', 'porcent_loss', 'min_load', 'max_load', 'avg_load_cpu', 'total_memory']
-        #data_frame[columnas_a_convertir] = data_frame[columnas_a_convertir].applymap(convertir_a_entero)
 
         # Consulta el catalgo de nodos ############ CAMBIAR POR INTERFACES
         ct_interfaces = database.execute_select_query_pandas(database.query_select_ct_interface())

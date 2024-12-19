@@ -8,7 +8,6 @@ WORK_DIR=$MAIN_DIR"update_portin/"
 SOURCE_CODE_DIR=$WORK_DIR"etl-update-tblportin/"
 PY_BIN_DIR=$MAIN_DIR"lineas_expiradas/py_env/bin/"
 YESTERDAY=$(date --date="yesterday" +"%Y-%m-%d")
-#YESTERDAY='2022-02-21'
 
 echo "imprimiendo fecha"
 echo "$YESTERDAY"

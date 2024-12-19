@@ -28,10 +28,6 @@ def main():
         logger.info('fin %s',str(fin))
         logger.info('Tiempo de ejecucion: %s',str(fin-inicio))
         logger.info('Pruebas de conexión y extracción tiempo_respuesta: %s, trafico_interface: %s y carga_cpu: %s ',str(len(tiempo_respuesta)), str(len(trafico_interface)), str(len(carga_cpu)))
-        ## Procesando tabla de leads_lead
-        """
-        """
-        #transformed_data = transform_process(extracted_data, configs.tblLeads)
     except Exception as e:
         logger.error("Error(s) ocurred in %s", str(e))
         logger.info('Done ETL-Preleads process with erros')
@@ -44,9 +40,7 @@ def extract_process():
         # Load data: Lineas expiradas DB
         today = datetime.date.today()
         yesterday = today - datetime.timedelta(days=1)
-#        str_date = str(yesterday)
         str_date = str(yesterday)
-        #prepersons_frame = utils.load_csv_data(configs.ROOT_DIR + configs.INPUT_FILES_DIR + 'leads.csv', '|')
 
         trafico_interface = database.select_data_frame(database.query_select_detalle_trafico_interface())
         tiempo_respuesta = database.select_data_frame(database.query_select_detalle_tiempo_respuesta_carga_cpu())
@@ -78,9 +72,7 @@ def load_process(data_frame, query, entitys, name_file,table_fields):
             data_frame = data_frame[data_frame.columns[data_frame.columns.isin(table_fields)]].reindex(columns=table_fields)
             preleads_update_query = utils.construct_update_query(entity=entitys, data=data_frame.to_dict(orient='records'),id=ids) 
             utils.save_text_data(preleads_update_query, configs.ROOT_DIR + configs.OUTPUT_FILES_DIR + name_file + '.txt')
-            
-            #database.execute_update_query(preleads_update_query)
-            
+                        
         elif query == 'insert':
             data_frame = data_frame[data_frame.columns[data_frame.columns.isin(table_fields)]].reindex(columns=table_fields)
             
