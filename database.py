@@ -279,7 +279,8 @@ def query_select_detalle_tiempo_respuesta_carga_cpu():
             where ncp.CustomerName = 'SAT' AND itcd.[Timestamp] > DATEADD(SECOND, -360, CURRENT_TIMESTAMP) 
             group by itcd.NodeID
         ) as sub on sub.Timestamp = rtcd.[Timestamp] and sub.NodeID = rtcd.NodeID --and sub.InterfaceID = itcd.InterfaceID 
-        where ccd.[Timestamp] >= DATEADD(SECOND, -150, rtcd.[Timestamp]) and ccd.[Timestamp] <= DATEADD(SECOND, +120, rtcd.[Timestamp]);
+        --where ccd.[Timestamp] >= DATEADD(SECOND, -150, rtcd.[Timestamp]) and ccd.[Timestamp] <= DATEADD(SECOND, +120, rtcd.[Timestamp]);
+        where ccd.[Timestamp] >= DATEADD(SECOND, -149, rtcd.[Timestamp]) and ccd.[Timestamp] <= DATEADD(SECOND, +149, rtcd.[Timestamp]);
     """
 
 def query_select_detalle_carga_cpu():
